@@ -15,11 +15,36 @@ using DotNetNuke.Common.Utilities;
 using System.Security.Cryptography;
 using OS_WorldPay.Components;
 using System.Collections.Specialized;
+using System.Globalization;
 
 namespace OS_WorldPay
 {
     public class ProviderUtils
     {
+
+        public static bool AreNullOrEmpty(params string[] stringsToValidate)
+        {
+            bool result = false;
+            Array.ForEach(stringsToValidate, str => {
+                if (string.IsNullOrEmpty(str)) result = true;
+            });
+            return result;
+        }
+
+        public static string stripGWInvalidChars(string strIn)
+        {
+            string[] toReplace = new string[] { "\\", "<", ">", "#", "]", "[" };
+
+            string strOut = strIn;
+
+            foreach (string charToReplace in toReplace)
+            {
+                strOut.Replace(charToReplace, "");
+            }
+
+            return strOut;
+        }
+
         public static NBrightInfo GetProviderSettings()
         {
             var objCtrl = new NBrightBuyController();
@@ -30,7 +55,6 @@ namespace OS_WorldPay
 
         public static String GetBankRemotePost(OrderData orderData)
         {
-            var rPost = new RemotePost();
 
             var objCtrl = new NBrightBuyController();
             var info = objCtrl.GetPluginSinglePageData("OS_WorldPaypayment", "OS_WorldPayPAYMENT", orderData.Lang);
@@ -40,23 +64,12 @@ namespace OS_WorldPay
 
             var request = new HostedTransactionRequest();
 
-            var appliedtotal =  orderData.PurchaseInfo.GetXmlPropertyRaw("genxml/appliedtotal").Replace(",", "");
-            request.amount = Convert.ToDouble(appliedtotal);
+            var appliedtotal =  orderData.PurchaseInfo.GetXmlPropertyRaw("genxml/appliedtotal");
+            request.amount = appliedtotal;
             request.currency = info.GetXmlProperty("genxml/textbox/currencycode");
             request.testMode = 0;  // Not sure what this should be.  Only example I found was 100 for test system??
             request.instId = installid;
             request.cartId = orderData.GetInfo().ItemID.ToString();
-
-            var requestInputs = request.ToNameValueCollection();
-
-            var param = new string[3];
-            param[0] = "orderid=" + orderData.PurchaseInfo.ItemID.ToString("");
-            param[1] = "status=1";
-            var pbxeffectue = Globals.NavigateURL(StoreSettings.Current.PaymentTabId, "", param);
-            param[0] = "orderid=" + orderData.PurchaseInfo.ItemID.ToString("");
-            param[1] = "status=0";
-            var pbxrefuse = Globals.NavigateURL(StoreSettings.Current.PaymentTabId, "", param);
-
 
             var postUrl = info.GetXmlProperty("genxml/textbox/liveurl");
             if (info.GetXmlPropertyBool("genxml/checkbox/preproduction"))
@@ -65,6 +78,9 @@ namespace OS_WorldPay
                 postUrl = info.GetXmlProperty("genxml/textbox/testurl");
             }
 
+            var requestInputs = request.ToNameValueCollection();
+
+            var rPost = new RemotePostPay();
             rPost.Url = postUrl;
 
             var callbackhashInputs = new StringBuilder();
@@ -72,22 +88,18 @@ namespace OS_WorldPay
             callbackhashInputs.Append(":");
             callbackhashInputs.Append(request.currency);
             callbackhashInputs.Append(":");
-            callbackhashInputs.Append(request.amount.ToString("#0.00"));
+            callbackhashInputs.Append(request.cartId);
             callbackhashInputs.Append(":");
-            callbackhashInputs.Append(request.testMode);
-            callbackhashInputs.Append(":");
-            callbackhashInputs.Append(request.instId);
+            callbackhashInputs.Append(appliedtotal);
 
             var signaturehashInputs = new StringBuilder();
             signaturehashInputs.Append(MD5secretKey);
             signaturehashInputs.Append(":");
             signaturehashInputs.Append(request.currency);
             signaturehashInputs.Append(":");
-            signaturehashInputs.Append(request.amount);
+            signaturehashInputs.Append(request.cartId);
             signaturehashInputs.Append(":");
-            signaturehashInputs.Append(request.testMode);
-            signaturehashInputs.Append(":");
-            signaturehashInputs.Append(request.instId);
+            signaturehashInputs.Append(appliedtotal);
 
             byte[] callbackhashDigest = new MD5CryptoServiceProvider().ComputeHash(StringToByteArray(callbackhashInputs.ToString()));
 
@@ -109,7 +121,7 @@ namespace OS_WorldPay
 
             if (info.GetXmlPropertyBool("genxml/checkbox/debugmode"))
             {
-                File.WriteAllText(PortalSettings.Current.HomeDirectoryMapPath + "\\debug_OS_WorldPaypost.html", rtnStr);
+                File.WriteAllText(PortalSettings.Current.HomeDirectoryMapPath + "\\debug_OS_WorldPaypost.html", rtnStr + " signaturehashInputs:" + signaturehashInputs + " request.amount:" + request.amount + " appliedtotal:" + appliedtotal);
             }
             return rtnStr;
         }

@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\AjaxProvider.cs" />
+    <Compile Include="Components\CallbackResult.cs" />
     <Compile Include="Components\Extensions.cs" />
     <Compile Include="Components\HashUtil.cs" />
     <Compile Include="Components\HostedTransactionRequest.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="notify.ashx.cs">
       <DependentUpon>notify.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Components\RemotePost.cs" />
+    <Compile Include="Components\RemotePostPay.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Installation\pluginOSWorldPay.xml" />
@@ -114,6 +115,7 @@
     <None Include="notify.ashx" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Documentation\" />
     <Folder Include="Themes\config\resx\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

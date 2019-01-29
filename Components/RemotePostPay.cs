@@ -6,7 +6,7 @@ using System.Web;
 
 namespace OS_WorldPay
 {
-    public class RemotePost
+    public class RemotePostPay
     {
         private System.Collections.Specialized.NameValueCollection Inputs = new System.Collections.Specialized.NameValueCollection();
         public string Url = "";

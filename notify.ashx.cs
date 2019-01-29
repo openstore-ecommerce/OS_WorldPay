@@ -3,6 +3,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Web;
 using NBrightCore.common;
 using Nevoweb.DNN.NBrightBuy.Components;
+using OS_WorldPay.Components;
 
 namespace OS_WorldPay.DNN.NBrightStore
 {
@@ -28,9 +29,11 @@ namespace OS_WorldPay.DNN.NBrightStore
 
             try
             {
+                var result = new ServerTransactionResult(context.Request.Form);
+
                 var debugMode = info.GetXmlPropertyBool("genxml/checkbox/debugmode");
                 var debugMsg = "START CALL" + DateTime.Now.ToString("s") + " </br>";
-                var rtnMsg = "version=2" + Environment.NewLine + "cdr=1";
+                var rtnMsg = "WorldPay return process. Uncompleted" + Environment.NewLine;
 
                 // ------------------------------------------------------------------------
                 // In this case the payment provider passes back data via form POST.
@@ -40,23 +43,21 @@ namespace OS_WorldPay.DNN.NBrightStore
                 string OS_WorldPayCartID = "";
                 string OS_WorldPayClientLang = "";
 
-                var orderid = Utils.RequestQueryStringParam(context, "ref");
+                var orderid = result.cartId;
+
                 debugMsg += "orderid: " + orderid + "</br>";
 
                 if (Utils.IsNumeric(orderid))
                 {
-                    var authcode = Utils.RequestQueryStringParam(context, "auto");
-                    var errcode = Utils.RequestQueryStringParam(context, "rtnerr");
 
                     OS_WorldPayStoreOrderID = Convert.ToInt32(orderid);
                     // ------------------------------------------------------------------------
 
                     debugMsg += "OrderId: " + orderid + " </br>";
-                    debugMsg += "errcode: " + errcode + " </br>";
-                    debugMsg += "authcode: " + authcode + " </br>";
+                    debugMsg += "StatusCode: " + result.StatusCode + " </br>";
 
                     var orderData = new OrderData(OS_WorldPayStoreOrderID);
-
+                    var transStatus = result.transStatus;
 
                     if (authcode == "")
                         rtnMsg = "KO";
@@ -89,7 +90,6 @@ namespace OS_WorldPay.DNN.NBrightStore
                     info.SetXmlProperty("genxml/debugmsg", debugMsg);
                     modCtrl.Update(info);
                 }
-
 
                 HttpContext.Current.Response.Clear();
                 HttpContext.Current.Response.Write(rtnMsg);

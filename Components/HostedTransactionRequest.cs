@@ -26,7 +26,7 @@ namespace OS_WorldPay.Components
         /// The decimal separator does not need to be included if the amount is an integral multiple of the major currency unit.
         /// Do not include other separators, for example between thousands.
         /// </summary>
-        public double amount { get; set; }
+        public string amount { get; set; }
 
         /// <summary>
         /// Your own reference number for this purchase.

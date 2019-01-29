@@ -48,6 +48,9 @@ namespace OS_WorldPay.Components
         public int CountryCode { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
+        public string cartId { get; set; }
+        public string transStatus { get; set; }
+        
 
         public NameValueCollection ReturnedFormVariables = new NameValueCollection();
 
@@ -95,7 +98,9 @@ namespace OS_WorldPay.Components
 
             this.EmailAddress = formVariables["EmailAddress"];
             this.PhoneNumber = formVariables["PhoneNumber"];
-
+            this.cartId = formVariables["cartId"];
+            this.transStatus = formVariables["transStatus"];
+            
             foreach (string key in formVariables)
             {
                 this.ReturnedFormVariables.Add(key, formVariables[key]);
