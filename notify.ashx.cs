@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Runtime.Remoting.Contexts;
 using System.Web;
 using NBrightCore.common;
@@ -29,7 +30,10 @@ namespace OS_WorldPay.DNN.NBrightStore
 
             try
             {
-                var result = new ServerTransactionResult(context.Request.Form);
+                var MD5secretKey = info.GetXmlProperty("genxml/textbox/secretkey");
+                var callbackpw = info.GetXmlProperty("genxml/textbox/callbackpw");
+
+                var result = new CallbackResult(context.Request.Form, MD5secretKey, callbackpw);
 
                 var debugMode = info.GetXmlPropertyBool("genxml/checkbox/debugmode");
                 var debugMsg = "START CALL" + DateTime.Now.ToString("s") + " </br>";
@@ -54,29 +58,25 @@ namespace OS_WorldPay.DNN.NBrightStore
                     // ------------------------------------------------------------------------
 
                     debugMsg += "OrderId: " + orderid + " </br>";
-                    debugMsg += "StatusCode: " + result.StatusCode + " </br>";
+                    debugMsg += "StatusCode: " + result.transStatus + " </br>";
 
                     var orderData = new OrderData(OS_WorldPayStoreOrderID);
                     var transStatus = result.transStatus;
 
-                    if (authcode == "")
-                        rtnMsg = "KO";
+                    if (transStatus == "Y")
+                        rtnMsg = CreateServerResponseString(TransactionStatus.Successful);
                     else
-                        rtnMsg = "OK";
+                        rtnMsg = CreateServerResponseString(TransactionStatus.NotSpecified);
 
-                    if (authcode == "")
+                    if (transStatus != "Y")
                     {
                         orderData.PaymentFail();
                     }
                     else
                     {
-                        if (errcode == "00000")
+                        if (transStatus == "Y")
                         {
                             orderData.PaymentOk();
-                        }
-                        else if (errcode == "99999")
-                        {
-                            orderData.PaymentOk("050");
                         }
                         else
                         {
@@ -117,6 +117,26 @@ namespace OS_WorldPay.DNN.NBrightStore
             {
                 return false;
             }
+        }
+
+
+        /// <summary>
+        /// Creates a response message confirming delivery of transaction result
+        /// </summary>
+        /// <param name="status">Result of delivery (note this is to confirm that you have received the result, not the result itself)</param>
+        /// <param name="message">Optional message for example, any exceptions that may have occurred</param>
+        /// <returns>String</returns>
+        public string CreateServerResponseString(TransactionStatus status, string message = "")
+        {
+
+            var response = new NameValueCollection();
+            response.Add("StatusCode", (int)status);
+            if (!string.IsNullOrEmpty(message))
+            {
+                response.Add("Message", message);
+            }
+
+            return response.ToQueryString();
         }
 
 

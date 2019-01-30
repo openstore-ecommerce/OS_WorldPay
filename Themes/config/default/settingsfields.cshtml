@@ -151,16 +151,9 @@ var info = (NBrightInfo)Model.List.First();
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">Merchant Password</label>
+            <label class="col-sm-2 control-label">Payment Response password</label>
             <div class="col-sm-3">
-                @TextBox(info, "genxml/textbox/password", "class='form-control'")
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label">MAC Code</label>
-            <div class="col-sm-3">
-                @TextBox(info, "genxml/textbox/mac", "class='form-control'")
+                @TextBox(info, "genxml/textbox/callbackpw", "class='form-control'")
             </div>
         </div>
 

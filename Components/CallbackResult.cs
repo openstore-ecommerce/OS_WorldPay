@@ -337,15 +337,13 @@ namespace OS_WorldPay.Components
             hashInputs.Append(":");
             hashInputs.Append(this.currency);
             hashInputs.Append(":");
+            hashInputs.Append(this.cartId);
+            hashInputs.Append(":");
             hashInputs.Append(this.amount);
-            hashInputs.Append(":");
-            hashInputs.Append(this.testMode);
-            hashInputs.Append(":");
-            hashInputs.Append(this.instId);
 
-            byte[] hashDigest = new MD5CryptoServiceProvider().ComputeHash(HostedPaymentProcessor.StringToByteArray(hashInputs.ToString()));
+            byte[] hashDigest = new MD5CryptoServiceProvider().ComputeHash(ProviderUtils.StringToByteArray(hashInputs.ToString()));
 
-            string newhash = HostedPaymentProcessor.ByteArrayToHexString(hashDigest);
+            string newhash = ProviderUtils.ByteArrayToHexString(hashDigest);
 
             //Check if Callback Password matches
             if (newhash != this.MC_callbacksignature || this.callbackPW != callbackPW)

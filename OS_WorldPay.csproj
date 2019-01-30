@@ -91,7 +91,6 @@
     <Content Include="Payment.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="ReadMe.txt" />
     <Content Include="Themes\config\img\logo.png" />
     <Content Include="Themes\config\js\OSWorldPay.js" />
     <None Include="BuildScripts\build.bat" />
@@ -99,6 +98,7 @@
     <None Include="BuildScripts\MSBuild.Community.Tasks.Targets" />
     <None Include="OS_WorldPay.dnn" />
     <None Include="packages.config" />
+    <None Include="README.md" />
     <None Include="Themes\config\default\payment_ok.cshtml" />
     <None Include="Themes\config\default\payment_fail.cshtml" />
     <None Include="Themes\config\default\methodselection.cshtml" />
