@@ -42,8 +42,8 @@
 						<basePath>DesktopModules\NBright\NBrightBuy\Plugins</basePath>
 						<file>
 							<path></path>
-							<name>pluginOS_WorldPay.xml</name>
-							<sourceFileName>pluginOS_WorldPay.xml</sourceFileName>
+							<name>pluginOSWorldPay.xml</name>
+							<sourceFileName>pluginOSWorldPay.xml</sourceFileName>
 						</file>
 					</files>
 				</component>
