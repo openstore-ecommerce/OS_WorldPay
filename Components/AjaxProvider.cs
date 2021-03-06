@@ -32,21 +32,23 @@ namespace OS_WorldPay
             var objCtrl = new NBrightBuyController();
 
             var strOut = "OS_WorldPay Ajax Error";
-
-            if (UserController.Instance.GetCurrentUserInfo().IsInRole("Administrators") || UserController.Instance.GetCurrentUserInfo().IsInRole("manager"))
+            if (PluginUtils.CheckPluginSecurity(PortalSettings.Current.PortalId, "os_worldpay"))
             {
-                // NOTE: The paramCmd MUST start with the plugin ref. in lowercase. (links ajax provider to cmd)
-                switch (paramCmd)
+                if (UserController.Instance.GetCurrentUserInfo().IsInRole("Administrators") || UserController.Instance.GetCurrentUserInfo().IsInRole("manager"))
                 {
-                    case "os_worldpay_savesettings":
-                        strOut = objCtrl.SavePluginSinglePageData(context);
-                        break;
-                    case "os_worldpay_selectlang":
-                        objCtrl.SavePluginSinglePageData(context);
-                        var nextlang = ajaxInfo.GetXmlProperty("genxml/hidden/nextlang");
-                        var info = objCtrl.GetPluginSinglePageData("OS_WorldPaypayment", "OS_WorldPayPAYMENT", nextlang);
-                        strOut = NBrightBuyUtils.RazorTemplRender("settingsfields.cshtml", 0, "", info, "/DesktopModules/NBright/OS_WorldPay", "config", nextlang, StoreSettings.Current.Settings());
-                        break;
+                    // NOTE: The paramCmd MUST start with the plugin ref. in lowercase. (links ajax provider to cmd)
+                    switch (paramCmd)
+                    {
+                        case "os_worldpay_savesettings":
+                            strOut = objCtrl.SavePluginSinglePageData(context);
+                            break;
+                        case "os_worldpay_selectlang":
+                            objCtrl.SavePluginSinglePageData(context);
+                            var nextlang = ajaxInfo.GetXmlProperty("genxml/hidden/nextlang");
+                            var info = objCtrl.GetPluginSinglePageData("OS_WorldPaypayment", "OS_WorldPayPAYMENT", nextlang);
+                            strOut = NBrightBuyUtils.RazorTemplRender("settingsfields.cshtml", 0, "", info, "/DesktopModules/NBright/OS_WorldPay", "config", nextlang, StoreSettings.Current.Settings());
+                            break;
+                    }
                 }
             }
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OS_WorldPay</RootNamespace>
     <AssemblyName>OS_WorldPay</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -40,18 +40,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\bin\DotNetNuke.dll</HintPath>
     </Reference>
-    <Reference Include="NBrightBuy">
-      <HintPath>..\..\..\bin\NBrightBuy.dll</HintPath>
-    </Reference>
     <Reference Include="NBrightCore">
-      <HintPath>..\..\..\bin\NBrightCore.dll</HintPath>
+      <HintPath>..\NBrightBuy\_external\NBrightCore.dll</HintPath>
     </Reference>
     <Reference Include="NBrightDNN">
-      <HintPath>..\..\..\bin\NBrightDNN.dll</HintPath>
+      <HintPath>..\NBrightBuy\_external\NBrightDNN.dll</HintPath>
     </Reference>
     <Reference Include="RazorEngine, Version=3.7.7.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\RazorEngine.dll</HintPath>
+      <HintPath>..\NBrightBuy\_external\RazorEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -93,9 +90,6 @@
     </Content>
     <Content Include="Themes\config\img\logo.png" />
     <Content Include="Themes\config\js\OSWorldPay.js" />
-    <None Include="BuildScripts\build.bat" />
-    <None Include="BuildScripts\ModulePackage.targets" />
-    <None Include="BuildScripts\MSBuild.Community.Tasks.Targets" />
     <None Include="OS_WorldPay.dnn" />
     <None Include="packages.config" />
     <None Include="README.md" />
@@ -117,6 +111,12 @@
   <ItemGroup>
     <Folder Include="Documentation\" />
     <Folder Include="Themes\config\resx\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NBrightBuy\NBrightBuy.csproj">
+      <Project>{8f850303-bec5-4247-9126-1e58f1402205}</Project>
+      <Name>NBrightBuy</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildScripts\ModulePackage.Targets" />

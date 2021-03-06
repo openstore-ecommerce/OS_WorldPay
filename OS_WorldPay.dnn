@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
 	<packages>
-		<package name="OS_WorldPay" type="Module" version="1.0.0">
+		<package name="OS_WorldPay" type="Module" version="1.2.0">
 			<friendlyName>OS_WorldPay</friendlyName>
 			<description>OS_WorldPay: Payment provider for open-Store</description>
 			<iconFile />
